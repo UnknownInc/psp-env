@@ -9,6 +9,6 @@ steps:
 substitutions:
     _CLUSTER_NAME: 'psp-cluster-a'
     _CLUSTER_LOCATION: 'us-central1-a'
-    _NAMESPACE: 'prod'
+    _NAMESPACE: 'dev'
 options:
     substitution_option: 'ALLOW_LOOSE'
