@@ -1,0 +1,26 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: psp
+  namespace: prod
+spec:
+ template:
+   spec:
+     containers:
+       - image: gcr.io/ind-si-infra-managment-184960/psp
+    #      env:
+    #        - name: CREDENTIALS_PATH
+    #          value: /var/secrets/
+
+    #      # This section specified where in the container we want the
+    #      # volume containing our secret to be mounted.
+    #      volumeMounts:
+    #        - name: robot-secret
+    #          mountPath: /var/secret
+
+    #  # This section attaches the secret "google-robot-secret" to
+    #  # the Pod holding the user container.
+    #  volumes:
+    #    - name: robot-secret
+    #      secret:
+    #        secretName: google-robot-secret
