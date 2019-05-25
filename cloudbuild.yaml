@@ -1,8 +1,14 @@
 steps:
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['upgrade', '--install', 'psp', '--namespace', 'prod', './']
+  args: ['upgrade', '--install', 'psp', '--namespace', '$_NAMESPACE', './']
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=psp-cluster-a'
+  - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
   - 'TILLERLESS=true'
-  - 'TILLER_NAMESPACE=prodtiller' 
+  - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
+substitutions:
+    _CLUSTER_NAME: 'psp-cluster-a'
+    _CLUSTER_LOCATION: 'us-central1-a'
+    _NAMESPACE: 'prod'
+options:
+    substitution_option: 'ALLOW_LOOSE'
