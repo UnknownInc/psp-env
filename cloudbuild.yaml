@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['upgrade', '--install', 'psp', '--namespace', '$_NAMESPACE', './']
+  args: ['upgrade', '--install', 'psp', '--force', '--namespace', '$_NAMESPACE', './']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
