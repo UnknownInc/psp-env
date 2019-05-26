@@ -5,6 +5,6 @@ deployment:
   namespace: dev
 psp:
   image:
-    repository: gcr.io/ind-si-infra-managment-184960/psp
-    tag: latest
+    repository: gcr.io/ind-si-infra-managment-184960/psp-dev
+    tag: ffbb3e8
     pullPolicy: IfNotPresent
