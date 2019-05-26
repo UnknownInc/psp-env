@@ -5,6 +5,6 @@ deployment:
   namespace: dev
 psp:
   image:
-    repository: gcr.io/GOOGLE_CLOUD_PROJECT/psp-PSP_BRANCH_NAME:PSP_COMMIT_SHA
-    tag: latest
+    repository: gcr.io/GOOGLE_CLOUD_PROJECT/psp-PSP_BRANCH_NAME
+    tag: PSP_SHORT_SHA
     pullPolicy: IfNotPresent
