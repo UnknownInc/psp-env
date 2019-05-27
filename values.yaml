@@ -5,3 +5,7 @@ psp:
     repository: gcr.io/ind-si-infra-managment-184960/psp-dev
     tag: 72e15ca
     pullPolicy: IfNotPresent
+redis:
+  cluster:
+    enabled: false
+    slaveCount: 0
