@@ -1,5 +1,8 @@
 steps:
 - name: 'gcr.io/$PROJECT_ID/helm'
+  args: ['dep',
+  'update']
+- name: 'gcr.io/$PROJECT_ID/helm'
   args: ['upgrade', 
   '--install', 
   'psp', 
