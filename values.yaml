@@ -3,5 +3,5 @@ deployment:
 psp:
   image:
     repository: gcr.io/ind-si-infra-managment-184960/psp-dev
-    tag: 7dbedcf
+    tag: fbade14
     pullPolicy: IfNotPresent
