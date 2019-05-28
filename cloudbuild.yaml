@@ -4,14 +4,14 @@ steps:
   args:
   - '-c'
   - |
-    apt-get install -y pwgen
     cat <<EOF > values.secrets.yaml
     ---
     redis:
-      redisPassword: $(pwgen 32 1)
+      redisPassword: $(openssl rand -base64 10)
     psp:
-        jwt_key: $(pwgen 32 1)
+        jwt_key: $(openssl rand -base64 10)
     EOF
+    cat values.secrets.yaml
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['dep',
   'update']
