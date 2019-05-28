@@ -1,4 +1,17 @@
 steps:
+- name: 'gcr.io/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    apt-get install -y pwgen
+    cat <<EOF > values.secrets.yaml
+    ---
+    redis:
+      redisPassword: $(pwgen 32 1)
+    psp:
+        jwt_key: $(pwgen 32 1)
+    EOF
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['dep',
   'update']
@@ -12,8 +25,10 @@ steps:
   '--install', 
   'psp', 
   '--force', 
-  '-f', 
+  '--values', 
   'values.yaml', 
+  '--values',
+  'values.secrets.yaml',
   '--set',
   'deployment.namespace=$_NAMESPACE',
   '--namespace', 

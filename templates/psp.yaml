@@ -9,6 +9,18 @@ spec:
      containers:
        - image: "{{ .Values.psp.image.repository }}:{{ .Values.psp.image.tag }}"
          imagePullPolicy: {{ .Values.psp.image.pullPolicy }}
+         env: 
+          - name: "PSP_JWT_KEY"
+            valueFrom:
+            secretKeyRef:
+              name: pspsecrets
+              key: "psp.jwt_key"
+          - name: "REDIS_PASSWORD"
+            valueFrom:
+            secretKeyRef:
+              name: pspsecrets
+              key: "redis.redisPassword"
+    #      env:
     #      env:
     #        - name: CREDENTIALS_PATH
     #          value: /var/secrets/
