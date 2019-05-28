@@ -15,7 +15,9 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: "jwt_key"
-        - name: "REDIS_PASSWORD"
+        - name: "CACHE_SERVER"
+          value: "{{ .Release.Name }}-redis-master"
+        - name: "CACHE_PASSWORD"
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
