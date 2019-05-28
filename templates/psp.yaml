@@ -1,8 +1,8 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: psp
-  namespace: {{ .Values.deployment.namespace }}
+  name: {{ .Release.Name }}
+  namespace: {{ Release.Namespace }}
 spec:
   template:
     spec:
@@ -13,12 +13,12 @@ spec:
         - name: "PSP_JWT_KEY"
           valueFrom:
             secretKeyRef:
-              name: pspsecrets
+              name: {{ .Release.Name }}-secrets
               key: "jwt_key"
         - name: "REDIS_PASSWORD"
           valueFrom:
             secretKeyRef:
-              name: pspsecrets
+              name: {{ .Release.Name }}-secrets
               key: redisPassword
     #      env:
     #      env:
