@@ -1,9 +1,7 @@
-deployment:
-  namespace: dev
 psp:
   image:
     repository: gcr.io/ind-si-infra-managment-184960/psp-master
-    tag: 50d8fdd
+    tag: fb43706
     pullPolicy: IfNotPresent
 redis:
   cluster:
