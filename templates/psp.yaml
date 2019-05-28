@@ -2,7 +2,7 @@ apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: {{ .Release.Name }}
-  namespace: {{ Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   template:
     spec:

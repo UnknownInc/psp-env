@@ -28,8 +28,6 @@ steps:
   'values.yaml', 
   '-f',
   'values.secrets.yaml',
-  '--set',
-  'deployment.namespace=$_NAMESPACE',
   '--namespace', 
   '$_NAMESPACE', 
   './']
