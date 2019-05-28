@@ -4,22 +4,22 @@ metadata:
   name: psp
   namespace: {{ .Values.deployment.namespace }}
 spec:
- template:
-   spec:
-     containers:
-       - image: "{{ .Values.psp.image.repository }}:{{ .Values.psp.image.tag }}"
-         imagePullPolicy: {{ .Values.psp.image.pullPolicy }}
-         env: 
-          - name: "PSP_JWT_KEY"
-            valueFrom:
-              secretKeyRef:
-                name: pspsecrets
-                key: "psp.jwt_key"
-          - name: "REDIS_PASSWORD"
-            valueFrom:
-              secretKeyRef:
-                name: pspsecrets
-                key: "redis.redisPassword"
+  template:
+    spec:
+      containers:
+      - image: "{{ .Values.psp.image.repository }}:{{ .Values.psp.image.tag }}"
+        imagePullPolicy: {{ .Values.psp.image.pullPolicy }}
+        env: 
+        - name: "PSP_JWT_KEY"
+          valueFrom:
+            secretKeyRef:
+              name: pspsecrets
+              key: "jwt_key"
+        - name: "REDIS_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: pspsecrets
+              key: redisPassword
     #      env:
     #      env:
     #        - name: CREDENTIALS_PATH
