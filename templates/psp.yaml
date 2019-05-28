@@ -2,12 +2,13 @@ apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: psp
-  namespace: prod
+  namespace: {{ .Values.deployment.namespace }}
 spec:
  template:
    spec:
      containers:
-       - image: gcr.io/ind-si-infra-managment-184960/psp
+       - image: "{{ .Values.psp.image.repository }}:{{ .Values.psp.image.tag }}"
+         imagePullPolicy: {{ .Values.psp.image.pullPolicy }}
     #      env:
     #        - name: CREDENTIALS_PATH
     #          value: /var/secrets/

@@ -1,6 +1,24 @@
 steps:
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['upgrade', '--install', 'psp', '--namespace', '$_NAMESPACE', './']
+  args: ['dep',
+  'update']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
+  - 'TILLERLESS=true'
+  - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
+- name: 'gcr.io/$PROJECT_ID/helm'
+  args: ['upgrade', 
+  '--install', 
+  'psp', 
+  '--force', 
+  '-f', 
+  'values.yaml', 
+  '--set',
+  'deployment.namespace=$_NAMESPACE',
+  '--namespace', 
+  '$_NAMESPACE', 
+  './']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
