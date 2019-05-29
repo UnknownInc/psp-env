@@ -17,11 +17,26 @@ spec:
               key: "jwt_key"
         - name: "CACHE_SERVER"
           value: "{{ .Release.Name }}-redis-master"
+        - name: "CACHE_PORT"
+          value: 6379
         - name: "CACHE_PASSWORD"
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: redisPassword
+        - name: "DB_SERVER"
+          value: "mgo-{{ .Release.Namespace }}"
+        - name: "DB_USERNAME"
+          valueFrom:
+            secretKeyRef:
+              name: "mgo-{{ .Release.Namespace }}-auth"
+              key: username
+        - name: "DB_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: "mgo-{{ .Release.Namespace }}-auth"
+              key: password
+        
     #      env:
     #      env:
     #        - name: CREDENTIALS_PATH
