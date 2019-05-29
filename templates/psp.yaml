@@ -31,10 +31,10 @@ spec:
         - name: "DB_USERNAME"
           valueFrom:
             secretKeyRef:
-              name: "mgo-{{ .Release.Namepace }}-auth"
+              name: "mgo-{{ .Release.Namespace }}-auth"
               key: username
         - name: "DB_PASSWORD"
           valueFrom:
             secretKeyRef:
-              name: "mgo-{{ .Release.Namepace }}-auth"
+              name: "mgo-{{ .Release.Namespace }}-auth"
               key: password
