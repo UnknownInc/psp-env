@@ -28,16 +28,6 @@ spec:
           value: "mgo-{{ .Release.Namespace }}"
         - name: "DB_PORT"
           value: 27017
-        - name: "DB_USERNAME"
-          valueFrom:
-            secretKeyRef:
-              name: "mgo-{{ .Release.Namespace }}-auth"
-              key: username
-        - name: "DB_PASSWORD"
-          valueFrom:
-            secretKeyRef:
-              name: "mgo-{{ .Release.Namespace }}-auth"
-              key: password
 #      env:
 #      env:
 #        - name: CREDENTIALS_PATH
