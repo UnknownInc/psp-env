@@ -1,7 +1,7 @@
 psp:
   image:
     repository: gcr.io/ind-si-infra-managment-184960/psp-dev
-    tag: 67c74d7
+    tag: 797b33d
     pullPolicy: IfNotPresent
 redis:
   cluster:
