@@ -31,27 +31,10 @@ spec:
         - name: "DB_USERNAME"
           valueFrom:
             secretKeyRef:
-              name: "mgo-{{ .Release.Namepace }}"
+              name: "mgo-{{ .Release.Namepace }}-auth"
               key: username
         - name: "DB_PASSWORD"
           valueFrom:
             secretKeyRef:
-              name: "mgo-{{ .Release.Namepace }}"
+              name: "mgo-{{ .Release.Namepace }}-auth"
               key: password
-#      env:
-#      env:
-#        - name: CREDENTIALS_PATH
-#          value: /var/secrets/
-
-#      # This section specified where in the container we want the
-#      # volume containing our secret to be mounted.
-#      volumeMounts:
-#        - name: robot-secret
-#          mountPath: /var/secret
-
-#  # This section attaches the secret "google-robot-secret" to
-#  # the Pod holding the user container.
-#  volumes:
-#    - name: robot-secret
-#      secret:
-#        secretName: google-robot-secret
