@@ -38,3 +38,18 @@ spec:
             secretKeyRef:
               name: "mgo-{{ .Release.Namespace }}-pulsedb"
               key: password
+        - name: "MAIL_USER"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: username
+        - name: "MAIL_PASS"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: password
+        - name: "MAIL_FROM"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: from
