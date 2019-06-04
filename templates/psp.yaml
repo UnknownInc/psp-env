@@ -13,8 +13,8 @@ spec:
         - name: "PSP_JWT_KEY"
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
-              key: "jwt_key"
+              name: {{ .Release.Name }}-{{ .Release.Namespace }}-secrets
+              key: "jwtkey"
         - name: "CACHE_SERVER"
           value: "{{ .Release.Name }}-redis-master"
         - name: "CACHE_PORT"

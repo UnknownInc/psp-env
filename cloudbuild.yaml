@@ -8,8 +8,6 @@ steps:
     ---
     redis:
       password: $(openssl rand -base64 10)
-    psp:
-      jwt_key: $(openssl rand -base64 10)
     EOF
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['dep',
