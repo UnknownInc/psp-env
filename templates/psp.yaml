@@ -13,29 +13,43 @@ spec:
         - name: "PSP_JWT_KEY"
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-secrets
-              key: "jwt_key"
+              name: {{ .Release.Name }}-{{ .Release.Namespace }}-secrets
+              key: "jwtkey"
         - name: "CACHE_SERVER"
           value: "{{ .Release.Name }}-redis-master"
+        - name: "CACHE_PORT"
+          value: "6379"
         - name: "CACHE_PASSWORD"
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-secrets
               key: redisPassword
-    #      env:
-    #      env:
-    #        - name: CREDENTIALS_PATH
-    #          value: /var/secrets/
-
-    #      # This section specified where in the container we want the
-    #      # volume containing our secret to be mounted.
-    #      volumeMounts:
-    #        - name: robot-secret
-    #          mountPath: /var/secret
-
-    #  # This section attaches the secret "google-robot-secret" to
-    #  # the Pod holding the user container.
-    #  volumes:
-    #    - name: robot-secret
-    #      secret:
-    #        secretName: google-robot-secret
+        - name: "DB_SERVER"
+          value: "mgo-{{ .Release.Namespace }}"
+        - name: "DB_PORT"
+          value: "27017"
+        - name: "DB_USERNAME"
+          valueFrom:
+            secretKeyRef:
+              name: "mgo-{{ .Release.Namespace }}-pulsedb"
+              key: username
+        - name: "DB_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: "mgo-{{ .Release.Namespace }}-pulsedb"
+              key: password
+        - name: "MAIL_USER"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: username
+        - name: "MAIL_PASS"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: password
+        - name: "MAIL_FROM"
+          valueFrom:
+            secretKeyRef:
+              name: "mailer-{{ .Release.Namespace }}-secrets"
+              key: from
