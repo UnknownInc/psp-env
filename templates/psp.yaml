@@ -7,13 +7,13 @@ spec:
   template:
     spec:
       containers:
-      - image: "{{ .Values.psp.image.repository }}:{{ .Values.psp.image.tag }}"
-        imagePullPolicy: {{ .Values.psp.image.pullPolicy }}
+      - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+        imagePullPolicy: {{ .Values.app.image.pullPolicy }}
         env: 
-        - name: "PSP_JWT_KEY"
+        - name: "JWT_KEY"
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-{{ .Release.Namespace }}-secrets
+              name: {{ .Release.Namespace }}-secrets
               key: "jwtkey"
         - name: "CACHE_SERVER"
           value: "{{ .Release.Name }}-redis-master"

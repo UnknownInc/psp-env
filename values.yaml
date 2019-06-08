@@ -1,4 +1,4 @@
-psp:
+app:
   image:
     repository: gcr.io/ind-si-infra-managment-184960/psp-dev
     tag: a4fea99

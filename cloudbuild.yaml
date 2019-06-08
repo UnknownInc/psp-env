@@ -20,7 +20,7 @@ steps:
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['upgrade', 
   '--install', 
-  'psp', 
+  '$_APP_NAME', 
   '--force', 
   '-f', 
   'values.yaml', 
@@ -35,6 +35,7 @@ steps:
   - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
 substitutions:
+    _APP_NAME: 'psp'
     _CLUSTER_NAME: 'psp-cluster-a'
     _CLUSTER_LOCATION: 'us-central1-a'
     _NAMESPACE: 'dev'
