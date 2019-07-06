@@ -6,6 +6,8 @@ steps:
   - |
     cat <<EOF > values.secrets.yaml
     ---
+    app:
+      minInstances: $_APP_MININSTANCES
     redis:
       password: $(openssl rand -base64 10)
     EOF
@@ -39,5 +41,6 @@ substitutions:
     _CLUSTER_NAME: 'psp-cluster-a'
     _CLUSTER_LOCATION: 'us-central1-a'
     _NAMESPACE: 'dev'
+    _APP_MININSTANCES: '0'
 options:
     substitution_option: 'ALLOW_LOOSE'

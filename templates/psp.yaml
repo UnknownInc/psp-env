@@ -7,6 +7,9 @@ metadata:
     app.kubernetes.io/name: {{.Release.Name}}-app
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "{{.Values.app.minScale}}"
     spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
