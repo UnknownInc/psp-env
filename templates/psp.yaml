@@ -17,7 +17,7 @@ spec:
         # Disable scale to zero with a minScale of 1.
         autoscaling.knative.dev/minScale: "1"
         # Limit scaling to 100 pods.
-        autoscaling.knative.dev/maxScale: "100"
+        autoscaling.knative.dev/maxScale: "50"
     spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
