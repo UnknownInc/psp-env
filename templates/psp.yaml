@@ -7,11 +7,12 @@ metadata:
     app.kubernetes.io/name: {{.Release.Name}}-app
 spec:
   template:
+    metadata:
+      autoscaling.knative.dev/minScale: "{{.Values.app.minInstances}}"
     spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-        minInstances: {{.Values.app.minInstances}}
         env: 
         - name: "JWT_KEY"
           valueFrom:
