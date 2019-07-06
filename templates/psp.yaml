@@ -8,7 +8,8 @@ metadata:
 spec:
   template:
     metadata:
-      autoscaling.knative.dev/minScale: "{{.Values.app.minInstances}}"
+      annotations:
+        autoscaling.knative.dev/minScale: "{{.Values.app.minScale}}"
     spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
