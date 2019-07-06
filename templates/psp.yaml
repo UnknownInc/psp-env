@@ -11,6 +11,7 @@ spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        minInstances: {{.Values.app.minInstances}}
         env: 
         - name: "JWT_KEY"
           valueFrom:

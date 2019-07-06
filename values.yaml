@@ -3,6 +3,7 @@ app:
     repository: gcr.io/ind-si-infra-managment-184960/psb-dev
     tag: 5c71ca3
     pullPolicy: Always
+    minInstances: 0
 redis:
   cluster:
     enabled: false
