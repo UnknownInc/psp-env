@@ -46,7 +46,7 @@ spec:
           value: "acid-psb-cluster"
         - name: "EVENTS_SERVER_PORT"
           value: "5432"
-        - name: "EVENTS_USERNAME"
+        - name: "EVENTS_USER"
           value: postgres
         - name: "EVENTS_PASSWORD"
           valueFrom:
