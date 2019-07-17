@@ -43,7 +43,7 @@ spec:
               name: "mgo-{{ .Release.Namespace }}-pulsedb"
               key: password
         - name: "EVENTS_SERVER"
-          value: "acid-psb-{{ .Release.Namespace }}-cluster"
+          value: "acid-psb-cluster"
         - name: "EVENTS_SERVER_PORT"
           value: "5432"
         - name: "EVENTS_USERNAME"
@@ -51,7 +51,7 @@ spec:
         - name: "EVENTS_PASSWORD"
           valueFrom:
             secretKeyRef:
-              name: "postgres.acid-{{ .Release.Namespace }}-cluster.credentials"
+              name: "postgres.acid-psb-cluster.credentials"
               key: password
         - name: "MAIL_USER"
           valueFrom:
