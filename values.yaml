@@ -1,7 +1,7 @@
 app:
   image:
     repository: gcr.io/ind-si-infra-managment-184960/psb-master
-    tag: 4.688516e+06
+    tag: 1c9812b
     pullPolicy: Always
     minInstances: 0
 redis:
