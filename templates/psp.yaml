@@ -13,7 +13,19 @@ spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
         imagePullPolicy: {{ .Values.app.image.pullPolicy }}
-        env: 
+        env:
+        - name: "BASE_URL"
+          value: "https://{{.Release.Name}}.{{.Release.Namespace}}.rmcloudsoftware.com"
+        - name: "PSB_MS_CLIENTID"
+          valueFrom:
+            secretKeyRef:
+              name: "ps-ad"
+              key: "clientid"
+        - name: "PSB_MS_CLIENTSECRET"
+          valueFrom:
+            secretKeyRef:
+              name: "ps-ad"
+              key: "clientsecret"
         - name: "JWT_KEY"
           valueFrom:
             secretKeyRef:
