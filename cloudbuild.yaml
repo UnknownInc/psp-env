@@ -21,6 +21,7 @@ steps:
   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['upgrade', 
+  '--replace',
   '--install', 
   '$_APP_NAME', 
   '--force', 
