@@ -12,6 +12,14 @@ steps:
       password: $(openssl rand -base64 10)
     EOF
 - name: 'gcr.io/$PROJECT_ID/helm'
+  args: ['repo',
+  'update']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
+  - 'TILLERLESS=true'
+  - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
+- name: 'gcr.io/$PROJECT_ID/helm'
   args: ['dep',
   'update']
   env:
@@ -20,8 +28,7 @@ steps:
   - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['upgrade', 
-  '--replace',
+  args: ['upgrade',
   '--install', 
   '$_APP_NAME', 
   '--force', 
