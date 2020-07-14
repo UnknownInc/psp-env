@@ -12,7 +12,8 @@ steps:
       password: $(openssl rand -base64 10)
     EOF
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['repo','update']
+  args: ['dep',
+  'update']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
@@ -20,43 +21,25 @@ steps:
   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
 - name: 'gcr.io/$PROJECT_ID/helm'
   args: ['upgrade',
-  '--install',
-  '$_APP_NAME',
-  './',
-  '-f',
-  'values.yaml',
+  '--install', 
+  '$_APP_NAME', 
+  '--force', 
+  '-f', 
+  'values.yaml', 
   '-f',
   'values.secrets.yaml',
-  '--namespace',
-  '$_NAMESPACE'
-  ]
+  '--namespace', 
+  '$_NAMESPACE', 
+  './']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
   - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
-# - name: 'gcr.io/$PROJECT_ID/helm'
-#   args: [
-#   'install',
-#   '$_APP_NAME',
-#   './',
-#   '-f',
-#   'values.yaml',
-#   '-f',
-#   'values.secrets.yaml',
-#   '--namespace',
-#   '$_NAMESPACE',
-#   '--dependency-update'
-#   ]
-#   env:
-#   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
-#   - 'TILLERLESS=true'
-#   - 'TILLER_NAMESPACE=${_NAMESPACE}tiller'
 substitutions:
-    _APP_NAME: 'psb'
-    _CLUSTER_NAME: 'psbcluster1'
-    _CLUSTER_LOCATION: 'us-central1-c'
+    _APP_NAME: 'psp'
+    _CLUSTER_NAME: 'psp-cluster-a'
+    _CLUSTER_LOCATION: 'us-central1-a'
     _NAMESPACE: 'dev'
     _APP_MININSTANCES: '0'
 options:

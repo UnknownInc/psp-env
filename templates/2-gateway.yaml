@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Release.Namespace }}gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http-{{ .Release.Namespace }}
+      protocol: HTTP
+    hosts:
+    - "*.{{ .Release.Namespace }}.rmcloudsoftware.com"
+  - port:
+      number: 443
+      name: https-{{ .Release.Namespace }}
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: psb-credential
+    hosts:
+    - "*.{{ .Release.Namespace}}.rmcloudsoftware.com"
