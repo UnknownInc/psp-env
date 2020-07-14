@@ -12,7 +12,7 @@ steps:
       password: $(openssl rand -base64 10)
     EOF
 - name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['repo','update']
+  args: ['dep','update']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=$_CLUSTER_LOCATION'
   - 'CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER_NAME'
