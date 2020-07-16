@@ -92,7 +92,7 @@ spec:
               name: "mgo-{{ .Release.Namespace }}-pulsedb"
               key: password
         - name: "EVENTS_SERVER"
-          value: "tsdb.dev.svc.cluster.local"
+          value: "tsdb.{{ .Release.Namesace }}.svc.cluster.local"
         - name: "EVENTS_SERVER_PORT"
           value: "5432"
         - name: "EVENTS_USER"

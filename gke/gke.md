@@ -48,16 +48,6 @@ export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgatew
 
 ```
 
-## enable  sds
-```sh
-istioctl manifest generate \
---set values.gateways.istio-egressgateway.enabled=false \
---set values.gateways.istio-ingressgateway.sds.enabled=true > \
-istio-ingressgateway.yaml
-kubectl apply -f istio-ingressgateway.yaml
-
-```
-
 # K8s dashboard
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
@@ -110,23 +100,25 @@ kubectl create clusterrolebinding cluster-admin-${SERVICE_ACCOUNT} --clusterrole
 git clone https://github.com/timescale/timescaledb-kubernetes.git
 cd timescaledb-kubernetes/timescaledb/charts/timescaledb-single/ 
 bash ./generate_kustomization.sh tsdb
-kubectl apply -k "./kustomize/tsdb" -n dev
-helm upgrade --install tsdb ./ -f dev.values.yaml -n dev
+kubectl apply -k "./kustomize/tsdb" -n $NS
+helm upgrade --install tsdb ./ -f $NS.values.yaml -n $NS
 ```
 
 TimescaleDB can be accessed via port `5432` on the following DNS name from within your cluster:
-`tsdb.dev.svc.cluster.local`
+`tsdb.<namespace>.svc.cluster.local`
 
 To get your password for superuser run:
 
 **superuser password**
 ```sh
-PGPASSWORD_POSTGRES=$(kubectl get secret --namespace dev tsdb-credentials -o jsonpath="{.data.PATRONI_SUPERUSER_PASSWORD}" | base64 --decode)
+PGPASSWORD_POSTGRES=$(kubectl get secret --namespace $NS tsdb-credentials -o jsonpath="{.data.PATRONI_SUPERUSER_PASSWORD}" | base64 --decode)
+EVENTS_PASSWORD=$PGPASSWORD_POSTGRES
+EVENTS_USER=postgres
 ```
 
 **admin password**
 ```sh
-PGPASSWORD_ADMIN=$(kubectl get secret --namespace dev tsdb-credentials -o jsonpath="{.data.PATRONI_admin_PASSWORD}" | base64 --decode)
+PGPASSWORD_ADMIN=$(kubectl get secret --namespace $NS tsdb-credentials -o jsonpath="{.data.PATRONI_admin_PASSWORD}" | base64 --decode)
 ```
 
 To connect to your database, chose one of these options:
@@ -138,7 +130,7 @@ To connect to your database, chose one of these options:
 kubectl run --generator=run-pod/v1 -i --tty --rm psql --image=postgres \
   --env "PGPASSWORD=$PGPASSWORD_POSTGRES" \
   --command -- psql -U postgres \
-  -h tsdb.dev.svc.cluster.local postgres 
+  -h tsdb.$NS.svc.cluster.local postgres 
 ```
 
 **login as admin**
@@ -148,18 +140,19 @@ kubectl run --generator=run-pod/v1 -i --tty --rm psql \
   --image=postgres \
   --env "PGPASSWORD=$PGPASSWORD_ADMIN" \
   --command -- psql -U admin \
-    -h tsdb.dev.svc.cluster.local postgres 
+    -h tsdb.$NS.svc.cluster.local postgres 
 ```
 
 2. Directly execute a psql session on the master node
 
 ```sh
-   MASTERPOD="$(kubectl get pod -o name --namespace dev -l release=tsdb,role=master)"
-   kubectl exec -i --tty --namespace dev ${MASTERPOD} -- psql -U postgres
+MASTERPOD="$(kubectl get pod -o name --namespace $NS -l release=tsdb,role=master)"
+kubectl exec -i --tty --namespace $NS ${MASTERPOD} -- psql -U postgres
 
 psql> create database psb;
 psql> \c psb;
 psql> CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+psql> GRANT ALL ON DATABASE psb to CURRENT_USER;
 ```
 
 # Kubedb
@@ -180,16 +173,16 @@ helm install kubedb-catalog appscode/kubedb-catalog \
 # Mongodb
 ```sh
 kubectl get mongodbversions
-kubectl apply -f mgo-dev.yaml -n dev
-DB_USERNAME="$(kubectl get secrets -n dev mgo-dev-auth -o jsonpath='{.data.\username}' | base64 -D)"
-DB_PASSWORD="$(kubectl get secrets -n dev mgo-dev-auth -o jsonpath='{.data.\password}' | base64 -D)"
+kubectl apply -f mgo-$NS.yaml -n $NS
+DB_USERNAME="$(kubectl get secrets -n $NS mgo-$NS-auth -o jsonpath='{.data.\username}' | base64 -D)"
+DB_PASSWORD="$(kubectl get secrets -n $NS mgo-$NS-auth -o jsonpath='{.data.\password}' | base64 -D)"
 DB_PORT=27019
-DB_SERVER=mgo-dev
+DB_SERVER=mgo-$NS
 DB_URI="mongodb://$DB_USERNAME:$DB_PASSWORD@$DB_SERVER:$DB_PORT/pulsedb"
-echo $DB_URI
-kubectl port-forward -n dev $(kubectl get pods -n dev --selector=kubedb.com/name=mgo-dev --output=jsonpath="{.items[0].metadata.name}") 27019:27017 &
+echo $DB_URI 
+kubectl port-forward -n $NS $(kubectl get pods -n $NS --selector=kubedb.com/name=mgo-$NS --output=jsonpath="{.items[0].metadata.name}") 27019:27017 &
 
-kubectl exec -it mgo-dev-0 -n dev -- mongo admin -u $DB_USERNAME -p $DB_PASSWORD
+kubectl exec -it mgo-$NS-0 -n $NS -- mongo admin -u $DB_USERNAME -p $DB_PASSWORD
 
 use pulsedb
 db.createUser(
@@ -199,4 +192,15 @@ db.createUser(
      roles: [ "readWrite", "dbAdmin" ]
    }
 )
+
+mongorestore --uri=mongodb://pdbuser:$DB_PASSWORD@127.0.0.1:27019/pulsedb -d pulsedb ./pulsedb
+```
+
+## cleanup
+```sh
+kubectl patch -n $NS mg/mgo-$NS -p '{"spec":{"terminationPolicy":"WipeOut"}}' --type="merge"
+kubectl delete -n $NS mg/mgo-$NS
+
+kubectl patch -n $NS drmn/mgo-$NS -p '{"spec":{"wipeOut":true}}' --type="merge"
+kubectl delete -n $NS drmn/mgo-$NS
 ```
