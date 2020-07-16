@@ -51,7 +51,7 @@ spec:
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
         imagePullPolicy: IfNotPresent
-        name: httpbin
+        name: "{{ .Release.Name }}"
         ports:
         - containerPort: 8080
         env:
@@ -59,7 +59,7 @@ spec:
           value: '8080'
         - name: 'APP_NAME'
           value: '{{ .Release.Name }}'
-        - name: 'VERSION'
+        - name: 'IMAGEAG'
           value: '{{ .Values.app.image.tag}}'
         - name: "BASE_URL"
           value: "https://{{.Release.Name}}.{{.Release.Namespace}}.rmcloudsoftware.com"
