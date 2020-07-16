@@ -1,0 +1,19 @@
+apiVersion: kubedb.com/v1alpha1
+kind: MongoDB
+metadata:
+  name: mgo-prod
+  namespace: prod
+spec:
+  version: "4.1.7-v2"
+  replicas: 3
+  replicaSet:
+    name: psb0
+  storageType: Durable
+  storage:
+    storageClassName: "fast"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 20Gi
+  terminationPolicy: Delete

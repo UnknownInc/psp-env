@@ -1,31 +1,68 @@
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}svc
   namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{.Release.Name}}-app
 spec:
+  selector:
+    app: {{ .Release.Name }}app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8000
+      targetPort: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}vsvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - "{{ .Release.Name }}.{{ .Release.Namespace }}.rmcloudsoftware.com"
+  gateways:
+  - {{ .Release.Namespace }}gateway
+  http:
+  - route:
+    - destination:
+        host: {{ .Release.Name }}svc
+        port:
+          number: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}app
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}app
+      version: v1
   template:
     metadata:
       annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: {{ .Release.Name }}app
+        version: v1
     spec:
+      serviceAccountName: {{ .Release.Name}}{{ .Release.Namespace}}
       containers:
       - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
-        imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: 8080
         env:
+        - name: 'PORT'
+          value: '8080'
+        - name: 'APP_NAME'
+          value: '{{ .Release.Name }}'
+        - name: 'VERSION'
+          value: '{{ .Values.app.image.tag}}'
         - name: "BASE_URL"
           value: "https://{{.Release.Name}}.{{.Release.Namespace}}.rmcloudsoftware.com"
-        - name: "PSB_MS_CLIENTID"
-          valueFrom:
-            secretKeyRef:
-              name: "ps-ad"
-              key: "clientid"
-        - name: "PSB_MS_CLIENTSECRET"
-          valueFrom:
-            secretKeyRef:
-              name: "ps-ad"
-              key: "clientsecret"
         - name: "JWT_KEY"
           valueFrom:
             secretKeyRef:
@@ -55,7 +92,7 @@ spec:
               name: "mgo-{{ .Release.Namespace }}-pulsedb"
               key: password
         - name: "EVENTS_SERVER"
-          value: "eventsdb"
+          value: "tsdb.{{ .Release.Namespace }}.svc.cluster.local"
         - name: "EVENTS_SERVER_PORT"
           value: "5432"
         - name: "EVENTS_USER"
@@ -63,8 +100,8 @@ spec:
         - name: "EVENTS_PASSWORD"
           valueFrom:
             secretKeyRef:
-              name: "eventsdb-auth"
-              key: POSTGRES_PASSWORD
+              name: "tsdb-credentials"
+              key: PATRONI_SUPERUSER_PASSWORD
         - name: "MAIL_USER"
           valueFrom:
             secretKeyRef:
@@ -80,3 +117,4 @@ spec:
             secretKeyRef:
               name: "mailer-{{ .Release.Namespace }}-secrets"
               key: from
+
