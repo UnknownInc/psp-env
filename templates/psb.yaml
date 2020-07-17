@@ -23,7 +23,17 @@ spec:
   gateways:
   - {{ .Release.Namespace }}gateway
   http:
-  - route:
+  - name: "{{ .Release.Name }}-admin-route"
+    match:
+    - uri:
+      prefix:"/admin"
+    route:
+    - destination:
+        host: {{ .Release.Name }}svc
+        port:
+          number: 8000
+  - name: "{{ .Release.Name }}-default-route"
+    route:
     - destination:
         host: {{ .Release.Name }}svc
         port:
