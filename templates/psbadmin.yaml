@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}svc
+  name: {{ .Release.Name }}adminsvc
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: {{ .Release.Name }}app
+    app: {{ .Release.Name }}adminapp
   ports:
     - name: http
       protocol: TCP
@@ -15,64 +15,55 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}vsvc
+  name: {{ .Release.Name }}adminvsvc
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - "{{ .Release.Name }}.{{ .Release.Namespace }}.rmcloudsoftware.com"
+  - "{{ .Release.Name }}admin.{{ .Release.Namespace }}.rmcloudsoftware.com"
   gateways:
   - {{ .Release.Namespace }}gateway
   http:
-  # - name: "{{ .Release.Name }}-admin-route"
-  #   match:
-  #   - uri:
-  #       prefix: "/admin"
-  #   route:
-  #   - destination:
-  #       host: {{ .Release.Name }}svc
-  #       port:
-  #         number: 8000
-  - name: "{{ .Release.Name }}-default-route"
+  - name: "{{ .Release.Name }}admin-route"
     route:
     - destination:
-        host: {{ .Release.Name }}svc
+        host: {{ .Release.Name }}adminsvc
         port:
           number: 8000
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}app
+  name: {{ .Release.Name }}adminapp
 spec:
   replicas: {{ .Values.app.replicas }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}app
+      app: {{ .Release.Name }}adminapp
       version: v1
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
       labels:
-        app: {{ .Release.Name }}app
+        app: {{ .Release.Name }}adminapp
         version: v1
     spec:
       serviceAccountName: {{ .Release.Name}}{{ .Release.Namespace}}
       containers:
-      - image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+      - image: "{{ .Values.adminapp.image.repository }}:{{ .Values.adminapp.image.tag }}"
         imagePullPolicy: IfNotPresent
-        name: "{{ .Release.Name }}"
+        name: "{{ .Release.Name }}admin"
         ports:
         - containerPort: 8080
         env:
         - name: 'PORT'
           value: '8080'
         - name: 'APP_NAME'
-          value: '{{ .Release.Name }}'
+          value: '{{ .Release.Name }}admin'
         - name: 'IMAGEAG'
-          value: '{{ .Values.app.image.tag}}'
+          value: '{{ .Values.adminapp.image.tag}}'
         - name: "BASE_URL"
-          value: "https://{{.Release.Name}}.{{.Release.Namespace}}.rmcloudsoftware.com"
+          value: "https://{{.Release.Name}}admin.{{.Release.Namespace}}.rmcloudsoftware.com"
         - name: "JWT_KEY"
           valueFrom:
             secretKeyRef:

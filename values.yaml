@@ -5,6 +5,13 @@ app:
     pullPolicy: Always
     replicas: 1
     minInstances: 0
+adminapp:
+  image:
+    repository: gcr.io/ind-si-infra-managment-184960/psbadmin
+    tag: ef7eb9e
+    pullPolicy: Always
+    replicas: 1
+    minInstances: 0
 redis:
   cluster:
     enabled: false
